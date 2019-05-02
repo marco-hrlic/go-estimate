@@ -1,7 +1,7 @@
 package particle
 
 import (
-	filter "github.com/milosgajdos83/go-estimate"
+	filter "github.com/marco-hrlic/go-estimate"
 	"gonum.org/v1/gonum/mat"
 )
 

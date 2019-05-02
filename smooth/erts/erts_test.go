@@ -4,10 +4,10 @@ import (
 	"os"
 	"testing"
 
-	filter "github.com/milosgajdos83/go-estimate"
-	"github.com/milosgajdos83/go-estimate/estimate"
-	"github.com/milosgajdos83/go-estimate/noise"
-	"github.com/milosgajdos83/go-estimate/sim"
+	filter "github.com/marco-hrlic/go-estimate"
+	"github.com/marco-hrlic/go-estimate/estimate"
+	"github.com/marco-hrlic/go-estimate/noise"
+	"github.com/marco-hrlic/go-estimate/sim"
 	"github.com/stretchr/testify/assert"
 	"gonum.org/v1/gonum/mat"
 )

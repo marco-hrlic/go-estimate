@@ -1,9 +1,9 @@
 # go-estimate
 
-[![GoDoc](https://godoc.org/github.com/milosgajdos83/go-estimate?status.svg)](https://godoc.org/github.com/milosgajdos83/go-estimate)
+[![GoDoc](https://godoc.org/github.com/marco-hrlic/go-estimate?status.svg)](https://godoc.org/github.com/marco-hrlic/go-estimate)
 [![License](https://img.shields.io/:license-apache-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Travis CI](https://travis-ci.org/milosgajdos83/go-estimate.svg?branch=master)](https://travis-ci.org/milosgajdos83/go-estimate)
-[![Go Report Card](https://goreportcard.com/badge/milosgajdos83/go-estimate)](https://goreportcard.com/report/github.com/milosgajdos83/go-estimate)
+[![Go Report Card](https://goreportcard.com/badge/milosgajdos83/go-estimate)](https://goreportcard.com/report/github.com/marco-hrlic/go-estimate)
 [![codecov](https://codecov.io/gh/milosgajdos83/go-estimate/branch/master/graph/badge.svg)](https://codecov.io/gh/milosgajdos83/go-estimate)
 
 This package offers a small suite of basic filtering algorithms written in Go. It currently provides the implementations of the following filters and estimators:
@@ -20,7 +20,7 @@ In addition it provides an implementation of [Rauch–Tung–Striebel](https://e
 
 Get the package:
 ```shell
-$ go get -u github.com/milosgajdos83/go-estimate
+$ go get -u github.com/marco-hrlic/go-estimate
 ```
 
 Get dependencies:
