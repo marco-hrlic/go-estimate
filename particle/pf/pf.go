@@ -201,7 +201,7 @@ func (b *PF) Predict(x, u mat.Vector) (filter.Estimate, error) {
 
 // Update corrects state x using the measurement z given control intput u and returns the corrected estimate.
 // It returns error if it fails to calculate system output estimate or if the size of z is invalid.
-func (b *PF) Update(x, u, z mat.Vector) (filter.Estimate, error) {
+func (b *PF) Update(x, w, u, z mat.Vector) (filter.Estimate, []float64, error) {
 	if z.Len() != len(b.inn) {
 		return nil, fmt.Errorf("Invalid measurement size: %d", z.Len())
 	}
@@ -213,38 +213,23 @@ func (b *PF) Update(x, u, z mat.Vector) (filter.Estimate, error) {
 	for c := range b.w {
 		yPart, err := b.model.Observe(b.x.ColView(c), u, b.r.Sample())
 		if err != nil {
-			return nil, fmt.Errorf("Particle state observation failed: %v", err)
+			return nil, nil, fmt.Errorf("Particle state observation failed: %v", err)
 		}
 		yPred.Slice(0, yPart.Len(), c, c+1).(*mat.Dense).Copy(yPart)
 	}
 
 	// Update particle weights:
-	// - calculate observation error for each particle output
-	// - multiply the resulting error with particle weight
-	//inn := new(mat.Dense)
-	for c := range b.w {
-		//for r := 0; r < z.Len(); r++ {
-			//b.inn[r] = z.At(r, 0) - yPred.ColView(c).AtVec(r)
-		//	b.inn[r] = z.At(r, 0) - PL_d
-		//}
+	for c := range w {
         var PL_d float64 = x.AtVec(1) + 10 * x.AtVec(0) * math.Log(z.AtVec(0)) + b.errPDF.Rand(nil)[0]
         tmp := []float64{z.AtVec(1) - PL_d}
 		// turn the innovation vector i.e. measurement error into probability
 		// Note: this isn't actually probability but that's ok because we normalize weights
 		diff := math.Exp(b.errPDF.LogProb(tmp))
-		b.w[c] = b.w[c] * diff
-        /*
-        fmt.Printf("w=%v\n", b.w[c])
-        fmt.Printf("pld=%v\n", PL_d)
-        fmt.Printf("dff=%v\n", diff)
-        fmt.Printf("tmp=%v\n", tmp)
-        fmt.Printf("-----------------\n")
-        */
-
+		w[c] = w[c] * diff
 	}
 
 	// normalize the particle weights so they express probability
-	floats.Scale(1/floats.Sum(b.w), b.w)
+	floats.Scale(1/floats.Sum(w), w)
 
 	rows, _ := b.x.Dims()
 	wavg := 0.0
@@ -252,8 +237,8 @@ func (b *PF) Update(x, u, z mat.Vector) (filter.Estimate, error) {
 	xEst := mat.NewVecDense(rows, nil)
 	// update (correct) particles estimates to weighted average
 	for r := 0; r < rows; r++ {
-		for c := range b.w {
-			wavg += b.w[c] * b.x.At(r, c)
+		for c := range w {
+			wavg += w[c] * x.At(r, c)
 		}
 		xEst.SetVec(r, wavg)
 		wavg = 0.0
@@ -262,7 +247,7 @@ func (b *PF) Update(x, u, z mat.Vector) (filter.Estimate, error) {
 	// update filter particle outputs
 	b.y.Copy(yPred)
 
-	return estimate.NewBase(xEst)
+	return estimate.NewBase(xEst), w, nil
 }
 
 // Run runs one step of Bootstrap Filter for given state x, input u and measurement z.
