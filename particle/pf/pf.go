@@ -113,14 +113,13 @@ func New(m filter.Model, ic filter.InitCond, q, r filter.Noise, p int, pdf distm
 
 // New creates new Particle Filter (PF) with the following parameters and returns it:
 // - m:     system model
-// - init:  initial condition of the filter
 // - q:     state  noise a.k.a. process noise
 // - r:     output  noise a.k.a. measurement noise
 // - p:     number of filter particles
 // - pdf:   Probability Density Function (PDF) of filter output error
 // - pd:    particle distribution
 // New returns error if non-positive number of particles is given or if the particles fail to be generated.
-func NewWithParticleDist(m filter.Model, ic filter.InitCond, q, r filter.Noise, p int, pdf distmv.RandLogProber, pd distmv.Rander) (*PF, error) {
+func NewWithParticleDist(m filter.Model, q, r filter.Noise, p int, pdf distmv.RandLogProber, pd distmv.Rander) (*PF, error) {
 	// must have at least one particle; can't be negative
 	if p <= 0 {
 		return nil, fmt.Errorf("Invalid particle count: %d", p)
